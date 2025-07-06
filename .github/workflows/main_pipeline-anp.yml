@@ -27,6 +27,10 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - name: Remove .python_packages folder if present
+        run: |
+          rm -rf .python_packages
+
       - name: Zip artifact
         run: zip -r release.zip SerieHistoricaMunicipiosHttp SerieHistoricaMunicipiosTimer host.json requirements.txt
 
