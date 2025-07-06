@@ -1,0 +1,38 @@
+name: Build and deploy Python project to Azure Function App - pipeline-anp
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python version
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Zip artifact for deployment
+        run: |
+          zip -r release.zip SerieHistoricaMunicipiosHttp SerieHistoricaMunicipiosTimer host.json requirements.txt
+
+      - name: Deploy to Azure Functions
+        uses: Azure/webapps-deploy@v3
+        with:
+          app-name: 'pipeline-anp'
+          package: release.zip
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5B2BDD137F2D4238A4AF02B39A14D68F }}
+          type: functionapp
