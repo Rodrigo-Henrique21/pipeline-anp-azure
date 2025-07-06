@@ -11,7 +11,6 @@ permissions:
   contents: read
 
 env:
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '.'
   PYTHON_VERSION: '3.11'
 
 jobs:
@@ -34,7 +33,7 @@ jobs:
       - name: Zip artifact
         run: zip -r release.zip SerieHistoricaMunicipiosHttp SerieHistoricaMunicipiosTimer host.json requirements.txt
 
-      - name: Azure Login
+      - name: Azure Login (OIDC)
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
