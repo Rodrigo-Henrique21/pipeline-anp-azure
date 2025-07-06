@@ -46,7 +46,7 @@ def _run_task() -> list[dict]:
     return [upload_to_blob(svc, link) for link in discover_links()]
 
 
-def main(mytimer: func.TimerRequest) -> None:
+def main(timer: func.TimerRequest) -> None:
     try:
         results = _run_task()
         logging.info("Timer execution completed. Files uploaded: %d", len(results))
