@@ -46,23 +46,10 @@ def _run_task() -> list[dict]:
     return [upload_to_blob(svc, link) for link in discover_links()]
 
 
-def main(req: func.HttpRequest | func.TimerRequest) -> func.HttpResponse:
-    """HTTP ou Timer → baixa arquivos do site da ANP para o Blob."""
+def main(mytimer: func.TimerRequest) -> None:
     try:
         results = _run_task()
-
-        summary = {
-            "total_uploaded": len(results),
-            "details": results,
-        }
-
-        if isinstance(req, func.HttpRequest):
-            return func.HttpResponse(
-                json.dumps(summary, ensure_ascii=False, indent=2),
-                mimetype="application/json",
-            )
+        logging.info("Timer execution completed. Files uploaded: %d", len(results))
     except Exception as exc:
-        logging.exception("Falha na execução")
-        if isinstance(req, func.HttpRequest):
-            return func.HttpResponse(str(exc), status_code=500)
+        logging.exception("Falha na execução da função Timer")
         raise
