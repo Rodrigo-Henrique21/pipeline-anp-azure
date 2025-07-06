@@ -15,24 +15,29 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write   # ESSENCIAL para login federado OIDC!
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Python version
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Zip artifact for deployment
-        run: |
-          zip -r release.zip SerieHistoricaMunicipiosHttp SerieHistoricaMunicipiosTimer host.json requirements.txt
+      - name: Zip code for deployment
+        run: zip -r release.zip SerieHistoricaMunicipiosHttp SerieHistoricaMunicipiosTimer host.json requirements.txt
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.CLIENT_ID }}
+          tenant-id: ${{ secrets.TENANT_ID }}
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       - name: Deploy to Azure Functions
-        uses: Azure/webapps-deploy@v3
+        uses: Azure/functions-action@v1
         with:
           app-name: 'pipeline-anp'
           package: release.zip
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5B2BDD137F2D4238A4AF02B39A14D68F }}
-          type: functionapp
