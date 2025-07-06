@@ -70,4 +70,4 @@ jobs:
           app-name: 'pipeline-anp'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7B632204CE0C4FF491780AC00777410A }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_75480F6BA6F044C1BEAD30F67C46D2B8 }}
